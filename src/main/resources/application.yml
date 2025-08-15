@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: spring-boot-mongo
+
+  data:
+    mongodb:
+      #      uri: ${vcap.services.mongodb.credentials.uri:mongodb}
+      uri: mongodb://172.22.99.191:27017/demodb
+
+logging:
+  level:
+    org.springframework.data.mongodb.observability: DEBUG
