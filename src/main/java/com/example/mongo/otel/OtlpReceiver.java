@@ -1,7 +1,6 @@
-package com.example.demo.otel;
+package com.example.mongo.otel;
 
 import io.opentelemetry.proto.metrics.v1.MetricsData;
-import io.opentelemetry.proto.metrics.v1.ResourceMetrics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/v1")
 @Slf4j
-public class OtelController {
+public class OtlpReceiver {
     private final Set<String> metricNames = Collections.synchronizedSet(new HashSet<>());
     // Map: MetricName -> Map<AttributeKey, AttributeValue>
     private final Map<String, Map<String, String>> metricResourceAttributes = Collections.synchronizedMap(new HashMap<>());
@@ -44,7 +43,7 @@ public class OtelController {
         try {
             MetricsData metricsData = MetricsData.parseFrom(body);
 
-            // Verarbeite jede ResourceMetrics separat
+            // Verarbeite jede Resource-Attribute für diese ResourceMetrics
             metricsData.getResourceMetricsList().forEach(resourceMetric -> {
                 // Extrahiere Ressource-Attribute für diese ResourceMetrics
                 Map<String, String> currentResourceAttributes = new HashMap<>();
@@ -66,8 +65,8 @@ public class OtelController {
                         // Speichere Ressource-Attribute pro Metrik
                         metricResourceAttributes.put(metricName, new HashMap<>(currentResourceAttributes));
 
-                        log.debug("Metrik {} mit {} Ressource-Attributen gespeichert",
-                                metricName, currentResourceAttributes.size());
+                        log.debug("Metrik empfangen: {}", metricName);
+                        currentResourceAttributes.forEach((k, v) -> log.debug("  Attribut: {} = {}", k, v));
                     });
                 });
             });

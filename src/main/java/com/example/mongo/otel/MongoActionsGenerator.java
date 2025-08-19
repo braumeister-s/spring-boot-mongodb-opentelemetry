@@ -3,7 +3,8 @@ package com.example.mongo.otel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,21 +13,15 @@ import java.util.stream.IntStream;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class StartupRunner implements CommandLineRunner {
+@EnableScheduling
+public class MongoActionsGenerator {
 
     private DemoRepository repo;
 
-    @Override
-    public void run(String... args) {
+    @Scheduled(fixedRate = 10000)
+    public void runScenario() {
 
-        var result = runScenario();
-        log.info("Vorhandene Notes vor dem Einfügen: {}", result.getExistingBefore().size());
-        log.info("Gerade eingefügte Notes: {}", result.getInsertedNow().size());
-        log.info("Danach wurde alles wieder gelöscht.");
-    }
-
-    public Result runScenario() {
-
+        log.info("MongoDB - Testdaten Generierung gestartet");
         // 1) Lesen
         List<Note> before = repo.findAll();
 
@@ -39,8 +34,6 @@ public class StartupRunner implements CommandLineRunner {
 
         // 3) alles löschen
         repo.deleteAll();
-
-        return new Result(before, saved);
     }
 
     @Data

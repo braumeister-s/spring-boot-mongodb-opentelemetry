@@ -5,7 +5,7 @@ spring:
   data:
     mongodb:
       #      uri: ${vcap.services.mongodb.credentials.uri:mongodb}
-      uri: mongodb://172.22.99.191:27017/demodb
+      uri: mongodb://localhost:27017/demodb
 
 logging:
   level:
